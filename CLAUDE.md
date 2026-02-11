@@ -177,10 +177,93 @@ For complete specifications, see `docs/`:
 
 ---
 
-## Fabric Integration (Swap Mock Data for Real Data)
+## Fabric Semantic Model Integration
 
-Mock data lives in `src/lib/mock-data.ts`. To connect to Fabric:
-1. Create API routes in `app/api/` that query your Fabric semantic model
-2. Replace mock data imports with `fetch()` calls to your API routes
-3. Data types in `src/lib/types.ts` define the exact shape — Fabric responses MUST conform
-4. See `docs/FABRIC_INTEGRATION.md` for full patterns
+Mock data lives in `src/lib/mock-data.ts`. To connect to a real Fabric semantic model, follow this guide. See `docs/FABRIC_INTEGRATION.md` for implementation patterns.
+
+### Two Token Scopes
+
+| Scope | Resource URL | Used For |
+|-------|-------------|----------|
+| **Power BI** | `https://analysis.windows.net/powerbi/api` | List datasets, execute DAX queries |
+| **Fabric** | `https://api.fabric.microsoft.com` | Model definitions (getDefinition) |
+
+Get tokens via: `az account get-access-token --resource <URL> --query accessToken -o tsv`
+Tokens expire ~60 min. Production: use MSAL client-credentials (Service Principal).
+
+### API Endpoints
+
+| Action | Method | URL |
+|--------|--------|-----|
+| List workspaces | GET | `https://api.powerbi.com/v1.0/myorg/groups` |
+| List models in workspace | GET | `https://api.powerbi.com/v1.0/myorg/groups/{workspaceId}/datasets` |
+| Pull schema (async) | POST | `https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/semanticModels/{datasetId}/getDefinition` |
+| Execute DAX | POST | `https://api.powerbi.com/v1.0/myorg/groups/{workspaceId}/datasets/{datasetId}/executeQueries` |
+
+### Schema Retrieval (async 3-step)
+
+1. POST `getDefinition` → returns `202` with `x-ms-operation-id` header
+2. Poll `GET /v1/operations/{operationId}` until `status: "Succeeded"` (5-20 sec)
+3. GET `/v1/operations/{operationId}/result` → base64-encoded TMDL files
+
+### TMDL Format (What You Get Back)
+
+Schema comes as base64-encoded TMDL files. Decode and parse:
+
+- **Table files** (`tables/*.tmdl`): table name, columns (`dataType`, `sourceColumn`, `isHidden`, `displayFolder`), measures (DAX expression, `formatString`), partitions (`directLake`/`import`)
+- **Relationships** (`relationships.tmdl`): `fromColumn` → `toColumn` (fact FK → dim PK)
+- **Model** (`model.tmdl`): list of all tables in the model
+
+Key fields to extract:
+- `table` name → use in DAX (wrap in single quotes if spaces)
+- `column` name → DAX reference: `'Table'[Column]`
+- `sourceColumn` → actual Lakehouse delta table column
+- `dataType` → `string`, `int64`, `double`, `dateTime`
+- `measure` → pre-built DAX calc (use these first, don't reinvent)
+- `formatString` → `#,0` = int, `0.0%` = pct, `$#,0` = currency
+- `displayFolder` → logical grouping (map to FilterGroup sections in UI)
+
+### DAX Query Patterns
+
+```dax
+-- Sample rows
+EVALUATE TOPN(5, 'Table Name')
+
+-- Row count
+EVALUATE ROW("Count", COUNTROWS('Table Name'))
+
+-- Aggregation with grouping
+EVALUATE SUMMARIZECOLUMNS('Table'[GroupBy], "Total", SUM('Table'[Value]))
+
+-- Use pre-built measures (preferred)
+EVALUATE ROW("KPI 1", [Measure Name], "KPI 2", [Another Measure])
+
+-- Time series
+EVALUATE SUMMARIZECOLUMNS('Date'[Month - Year], 'Date'[month_key], "Value", [Measure])
+ORDER BY 'Date'[month_key]
+```
+
+DAX response rows are keyed as `Table[Column]` — strip the prefix for clean object keys.
+
+### DAX → Dashboard Component Mapping
+
+| DAX Pattern | Dashboard Component | Notes |
+|-------------|-------------------|-------|
+| `ROW("label", [Measure])` | `KpiCard` | One row, one value per KPI |
+| `SUMMARIZECOLUMNS(dim, "val", agg)` | `BarChart` / `DonutChart` | Group by dimension |
+| `SUMMARIZECOLUMNS('Date'[...], "val", measure)` | `LineChart` | Time series |
+| `TOPN(N, table)` | `DataTable` | Ranked list |
+| `SUMMARIZECOLUMNS(dim1, dim2, "val", agg)` | `ComboChart` | Two dimensions |
+
+### Known Workspace & Model IDs
+
+| Workspace | ID | Model | Dataset ID |
+|-----------|-----|-------|------------|
+| THOR BI | `9c727ce4-5f7e-4008-b31e-f3e3bd8e0adc` | Statistical Survey | `27df7e8c-17d4-45a5-9267-4f4e971dfd7f` |
+
+### Limitations
+
+- `INFO.TABLES()`/`INFO.COLUMNS()` may fail on Direct Lake — use `getDefinition` instead
+- DAX response capped at ~1MB — use `TOPN()` or filters for large result sets
+- Rate limits: Power BI ~200 req/hr, Fabric ~100 req/min — cache aggressively
+- Full Node.js service module: `C:\Users\rbiren\Desktop\FABRIC_SETUP.md` section 9
