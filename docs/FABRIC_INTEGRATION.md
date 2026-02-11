@@ -62,6 +62,214 @@ This MUST be configured in `.env.local` (never committed to version control).
 
 ---
 
+## 2b. Automated Authentication & Schema Discovery
+
+> **This entire section is executed by Claude automatically during the Data Source Gate. No user input is needed for schema discovery.**
+
+### Authentication Priority
+
+Claude acquires a bearer token in this order:
+
+#### 1. Azure CLI (preferred — zero config)
+```bash
+az account get-access-token --resource https://analysis.windows.net/powerbi/api --query accessToken -o tsv
+```
+Works if the user has run `az login`. The token is valid for ~60 minutes.
+
+#### 2. Service Principal (fallback)
+If Azure CLI is not available, Claude checks `.env.local` for:
+```
+FABRIC_TENANT_ID=<azure-ad-tenant-id>
+FABRIC_CLIENT_ID=<app-registration-client-id>
+FABRIC_CLIENT_SECRET=<client-secret>
+```
+
+Token request:
+```bash
+curl -s -X POST "https://login.microsoftonline.com/${FABRIC_TENANT_ID}/oauth2/v2.0/token" \
+  -d "grant_type=client_credentials&client_id=${FABRIC_CLIENT_ID}&client_secret=${FABRIC_CLIENT_SECRET}&scope=https://analysis.windows.net/powerbi/api/.default"
+```
+
+The response contains `access_token`. Claude stores it in `.env.local` as `FABRIC_TOKEN`.
+
+#### 3. If both fail
+Claude tells the user to run `az login` or configure service principal credentials. Discovery cannot proceed without a valid token.
+
+### Dataset Discovery
+
+If the dataset ID is not already known (i.e., not in the Known Models table in `CLAUDE.md`):
+
+**List workspaces:**
+```
+GET https://api.powerbi.com/v1.0/myorg/groups
+Authorization: Bearer <token>
+```
+
+**List datasets in a workspace:**
+```
+GET https://api.powerbi.com/v1.0/myorg/groups/{workspaceId}/datasets
+Authorization: Bearer <token>
+```
+
+Claude matches the user's requested model name against the dataset names in the response.
+
+### Schema Discovery via Fabric getDefinition API
+
+> **WARNING**: Do NOT use `INFO.TABLES()`, `INFO.COLUMNS()`, `INFO.MEASURES()`, or `INFO.RELATIONSHIPS()` via the Power BI REST `executeQueries` endpoint. These DAX INFO functions are **not supported** by that API (error code 3239575574). `COLUMNSTATISTICS()` only returns imported tables, not Direct Lake. The Scanner Admin API requires admin permissions. **The only reliable method is `getDefinition`.**
+
+Once Claude has a valid token and dataset ID (from the Known Models table or dataset discovery above), it retrieves the full TMDL model definition via the Fabric REST API. This is a **3-step async process**:
+
+#### Step 1: Request the definition
+
+```bash
+curl -s -D - -X POST \
+  "https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/semanticModels/{datasetId}/getDefinition" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -H "Content-Length: 0"
+```
+
+Response: **HTTP 202 Accepted** with headers:
+- `Location:` → polling URL
+- `Retry-After:` → seconds to wait (typically 20)
+- `x-ms-operation-id:` → operation ID
+
+#### Step 2: Poll until complete
+
+Wait the `Retry-After` seconds, then GET the `Location` URL:
+
+```bash
+sleep 20
+curl -s "{location_url}" -H "Authorization: Bearer <token>"
+```
+
+Response when done:
+```json
+{ "status": "Succeeded", "percentComplete": 100 }
+```
+
+If `status` is not `Succeeded`, wait and poll again.
+
+#### Step 3: Fetch the result
+
+```bash
+curl -s "{location_url}/result" \
+  -H "Authorization: Bearer <token>" \
+  -o tmdl_raw.json
+```
+
+Response: JSON with `definition.parts[]` — each part has a `path` and base64-encoded `payload`:
+
+```json
+{
+  "definition": {
+    "parts": [
+      { "path": "definition/tables/MyTable.tmdl", "payload": "<base64>" },
+      { "path": "definition/tables/_Measures.tmdl", "payload": "<base64>" },
+      { "path": "definition/relationships.tmdl", "payload": "<base64>" },
+      { "path": "definition/model.tmdl", "payload": "<base64>" },
+      ...
+    ]
+  }
+}
+```
+
+### Processing the TMDL Definition
+
+Use Python (anaconda path: `C:\Users\rbiren\AppData\Local\anaconda3\python.exe`, bash path: `/c/Users/rbiren/AppData/Local/anaconda3/python.exe`) to decode and parse the TMDL files.
+
+**Decode all .tmdl files:**
+```python
+import json, base64
+d = json.load(open('tmdl_raw.json'))
+parts = {
+    p['path']: base64.b64decode(p['payload']).decode('utf-8')
+    for p in d['definition']['parts']
+    if p['path'].endswith('.tmdl')
+}
+```
+
+**Extract tables and columns from each `definition/tables/*.tmdl` file:**
+
+TMDL format uses indentation-based structure:
+```
+table 'Table Name'
+    column 'Column Name'
+        dataType: string
+        isHidden                    ← if present, column is hidden
+        displayFolder: FolderName   ← grouping for filters
+        sourceColumn: source_col
+    measure 'Measure Name' = DAX_EXPRESSION
+        formatString: #,0
+        displayFolder: FolderPath
+    partition TableName = entity
+        mode: directLake
+```
+
+**Parsing rules:**
+- **Tables**: Each `definition/tables/*.tmdl` file is one table. Skip `_Measures` table (only holds base measures).
+- **Columns**: Lines starting with `column`. Skip columns where `isHidden` is present or `displayFolder` contains "Hidden".
+- **Data types**: Read from `dataType:` line. Values: `string`, `int64`, `double`, `dateTime`, `boolean`.
+- **Display folders**: Read from `displayFolder:` line. Use these to group filters (e.g., `01 - Attributes\RV Attributes`, `01 - Calendar`).
+- **Measures**: Lines starting with `measure`. The DAX expression follows `=`. Read `formatString` and `displayFolder`.
+- **Relationships**: In `definition/relationships.tmdl`. Format: `fromColumn: 'Table'.column` → `toColumn: 'Table'.column`.
+
+**Data type mapping (TMDL → TypeScript):**
+
+| TMDL Type | TypeScript Type |
+|-----------|----------------|
+| `string` | `string` |
+| `int64` | `number` |
+| `double` | `number` |
+| `dateTime` | `string` (ISO 8601) |
+| `boolean` | `boolean` |
+
+### Writing the Cache
+
+After processing, Claude writes:
+
+**`src/config/schema-cache.json`:**
+```json
+{
+  "tables": [
+    {
+      "name": "TableName",
+      "columns": [
+        { "name": "ColumnName", "dataType": "String", "description": "..." }
+      ]
+    }
+  ],
+  "measures": [
+    { "name": "MeasureName", "expression": "DAX expression", "table": "TableName" }
+  ],
+  "relationships": [
+    { "from": "Table1.Column", "to": "Table2.Column", "type": "many-to-one" }
+  ],
+  "discoveredAt": "ISO-8601 timestamp"
+}
+```
+
+**`src/config/data-source.json`:**
+```json
+{
+  "configured": true,
+  "workspace": "Workspace Name",
+  "workspaceId": "...",
+  "dataset": "Dataset Name",
+  "datasetId": "...",
+  "schemaDiscovered": true,
+  "lastSynced": "ISO-8601 timestamp"
+}
+```
+
+### Re-discovery
+
+If the schema needs to be refreshed (model changed, new tables added):
+1. Set `configured: false` in `data-source.json`
+2. Re-run the Data Source Gate — Claude will re-authenticate and re-discover
+
+---
+
 ## 3. API Endpoint Patterns
 
 ### Standard Query Endpoint
@@ -453,28 +661,20 @@ You MUST NOT show a full-page loading spinner. Each section loads independently 
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `FABRIC_API_URL` | Fabric REST API base URL (server-side only) | For production |
-| `FABRIC_TOKEN` | Authentication token for Fabric (server-side only) | For production |
-| `NEXT_PUBLIC_USE_MOCK_DATA` | `"true"` to use mock data, `"false"` for Fabric | Always |
+| `FABRIC_TOKEN` | Bearer token (server-side only, auto-generated by Section 2b) | For production |
+| `NEXT_PUBLIC_USE_MOCK_DATA` | `"true"` for mock data, `"false"` for Fabric | Always |
 | `NEXT_PUBLIC_FABRIC_WORKSPACE` | Fabric workspace ID (client-safe) | For production |
+| `FABRIC_TENANT_ID` | Azure AD tenant ID (server-side only) | Service principal only |
+| `FABRIC_CLIENT_ID` | App registration client ID (server-side only) | Service principal only |
+| `FABRIC_CLIENT_SECRET` | Client secret (server-side only) | Service principal only |
+
+> Authentication method priority and token acquisition are defined in **Section 2b** above. `FABRIC_TOKEN` is auto-generated — do not set it manually.
 
 ### Rules
 
-- You MUST prefix client-accessible variables with `NEXT_PUBLIC_`.
-- You MUST NOT prefix server-only secrets (tokens, API keys) with `NEXT_PUBLIC_`.
-- You MUST NOT commit `.env.local` to version control.
-- You MUST include a `.env.example` file with all required variables (without values).
-
-### .env.example
-
-```
-# Data Source Toggle
-NEXT_PUBLIC_USE_MOCK_DATA=true
-
-# Microsoft Fabric (production only)
-FABRIC_API_URL=
-FABRIC_TOKEN=
-NEXT_PUBLIC_FABRIC_WORKSPACE=
-```
+- Prefix client-accessible variables with `NEXT_PUBLIC_`.
+- NEVER prefix server-only secrets with `NEXT_PUBLIC_`.
+- NEVER commit `.env.local` to version control.
 
 ---
 

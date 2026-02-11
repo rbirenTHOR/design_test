@@ -1,0 +1,988 @@
+{
+  "tables": [
+    {
+      "name": "Statistical Survey Registration",
+      "columns": [
+        {
+          "name": "Placement BTA",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Placement Geography",
+          "sourceColumn": "placement_bta"
+        },
+        {
+          "name": "Placement City",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Placement Geography",
+          "sourceColumn": "placement_city"
+        },
+        {
+          "name": "Placement County",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Placement Geography",
+          "sourceColumn": "placement_county"
+        },
+        {
+          "name": "Placement State",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Placement Geography",
+          "sourceColumn": "placement_state"
+        },
+        {
+          "name": "Placement Zip",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Placement Geography",
+          "sourceColumn": "placement_zip"
+        },
+        {
+          "name": "Price Group",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "price_group"
+        },
+        {
+          "name": "Dealer Group",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Dealership Geography",
+          "sourceColumn": "dealership"
+        },
+        {
+          "name": "Dealership BTA",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Dealership Geography",
+          "sourceColumn": "dealership_bta"
+        },
+        {
+          "name": "Dealership City",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Dealership Geography",
+          "sourceColumn": "dealership_city"
+        },
+        {
+          "name": "Dealership County",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Dealership Geography",
+          "sourceColumn": "dealership_county"
+        },
+        {
+          "name": "Dealership State",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "chassis"
+        },
+        {
+          "name": "Chassis Model",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "length"
+        },
+        {
+          "name": "Gross Vehicle Weight",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "gross_vehicle_weight"
+        },
+        {
+          "name": "RV Subtype",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Manufacturer - Division - Model",
+          "sourceColumn": "division"
+        },
+        {
+          "name": "RV Model",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Manufacturer - Division - Model",
+          "sourceColumn": "rv_model"
+        },
+        {
+          "name": "Drive Type",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "drive_type"
+        },
+        {
+          "name": "Number of Axles",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "number_of_axles"
+        },
+        {
+          "name": "Is Rental",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "is_rental"
+        },
+        {
+          "name": "Is THOR",
+          "dataType": "int64",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "is_thor"
+        },
+        {
+          "name": "Motorized or Towable",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "motorized_towable"
+        },
+        {
+          "name": "THOR Operating Company",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "thor_operating_company"
+        },
+        {
+          "name": "Model Year",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Manufacturer - Division - Model",
+          "sourceColumn": "model_year"
+        },
+        {
+          "name": "RV Type",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\RV Attributes",
+          "sourceColumn": "rv_type"
+        },
+        {
+          "name": "Dealership Country",
+          "dataType": "string",
+          "displayFolder": "01 - Attributes\\Dealership Geography",
+          "sourceColumn": "dealership_country"
+        }
+      ]
+    }
+  ],
+  "measures": [
+    {
+      "name": "Class A Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[RV Type] = \"Class A\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "Class B Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[RV Type] = \"Class B\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "Class C Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[RV Type] = \"Class C\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "Motorized Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[Motorized or Towable] = \"Motorized\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "Towable Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[Motorized or Towable] = \"Towable\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "Fifth Wheel Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[RV Type] = \"Fifth Wheel\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "Travel Trailer Registration",
+      "expression": "CALCULATE(SUM('Statistical Survey Registration'[registration_count]),'Statistical Survey Registration'[RV Type] = \"Travel Trailer\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\General"
+    },
+    {
+      "name": "THOR Class A Registration",
+      "expression": "CALCULATE([Class A Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Class B Registration",
+      "expression": "CALCULATE([Class B Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Class C Registration",
+      "expression": "CALCULATE([Class C Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Registration Count",
+      "expression": "CALCULATE([Registration Count], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Towable Registration",
+      "expression": "CALCULATE([Towable Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "THOR Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration], 'Statistical Survey Registration'[Is THOR] = 1)",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\THOR"
+    },
+    {
+      "name": "Alliance RV Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration], 'Statistical Survey Registration'[Manufacturer] = \"Alliance RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Alliance RV"
+    },
+    {
+      "name": "Brinkley RV Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration], 'Statistical Survey Registration'[Manufacturer] = \"Brinkley RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Brinkley RV"
+    },
+    {
+      "name": "Forest River Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration], 'Statistical Survey Registration'[Manufacturer] = \"Forest River Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Forest River RV"
+    },
+    {
+      "name": "Winnebago Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration], 'Statistical Survey Registration'[Manufacturer] IN {\"Winnebago Towable\",\"Grand Design RV\",\"Newmar Corp\"})",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Winnebago"
+    },
+    {
+      "name": "Other Travel Trailer Registration",
+      "expression": "```\n\nVAR ExcludedManufacturers =\n{\n\"THOR Industries Inc\",\n\"Forest River Inc\",\n\"Winnebago Towable\",\n\"Grand Design RV\",\n\"Newmar Corp\",\n\"Alliance RV\",\n\"Brinkley RV\"\n}\nRETURN\nCALCULATE([Travel Trailer Registration], NOT 'Statistical Survey Registration'[Manufacturer] IN ExcludedManufacturers)\n```",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Other"
+    },
+    {
+      "name": "THOR MS% (Class B)",
+      "expression": "DIVIDE([THOR Class B Registration],[Class B Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    },
+    {
+      "name": "THOR MS% (Class C)",
+      "expression": "DIVIDE([THOR Class C Registration],[Class C Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    },
+    {
+      "name": "THOR MS% (Fifth Wheel)",
+      "expression": "DIVIDE([THOR Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    },
+    {
+      "name": "THOR MS% (Motorized)",
+      "expression": "DIVIDE([THOR Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    },
+    {
+      "name": "THOR MS% (Towable)",
+      "expression": "DIVIDE([THOR Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    },
+    {
+      "name": "THOR MS% (Travel Trailer)",
+      "expression": "DIVIDE([THOR Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    },
+    {
+      "name": "Alliance RV MS% (Travel Trailer)",
+      "expression": "DIVIDE([Alliance RV Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Alliance RV"
+    },
+    {
+      "name": "Brinkley RV MS% (Travel Trailer)",
+      "expression": "DIVIDE([Brinkley RV Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Brinkley RV"
+    },
+    {
+      "name": "Forest River MS% (Travel Trailer)",
+      "expression": "DIVIDE([Forest River Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Forest River"
+    },
+    {
+      "name": "Other MS% (Travel Trailer)",
+      "expression": "DIVIDE([Other Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Other"
+    },
+    {
+      "name": "Winnebago MS% (Travel Trailer)",
+      "expression": "DIVIDE([Winnebago Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Winnebago"
+    },
+    {
+      "name": "Alliance RV Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration], 'Statistical Survey Registration'[Manufacturer] = \"Alliance RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Alliance RV"
+    },
+    {
+      "name": "Brinkley RV Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration], 'Statistical Survey Registration'[Manufacturer] = \"Brinkley RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Brinkley RV"
+    },
+    {
+      "name": "Alliance RV MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Alliance RV Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Alliance RV"
+    },
+    {
+      "name": "Brinkley RV MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Brinkley RV Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Brinkley RV"
+    },
+    {
+      "name": "Forest River Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration], 'Statistical Survey Registration'[Manufacturer] = \"Forest River Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Forest River RV"
+    },
+    {
+      "name": "Forest River MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Forest River Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Forest River"
+    },
+    {
+      "name": "Other Fifth Wheel Registration",
+      "expression": "```\n\nVAR ExcludedManufacturers =\n{\n\"THOR Industries Inc\",\n\"Forest River Inc\",\n\"Winnebago Towable\",\n\"Grand Design RV\",\n\"Newmar Corp\",\n\"Alliance RV\",\n\"Brinkley RV\"\n}\nRETURN\nCALCULATE([Fifth Wheel Registration], NOT 'Statistical Survey Registration'[Manufacturer] IN ExcludedManufacturers)\n```",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Other"
+    },
+    {
+      "name": "Other MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Other Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Other"
+    },
+    {
+      "name": "Winnebago Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration], 'Statistical Survey Registration'[Manufacturer] IN {\"Winnebago Towable\",\"Grand Design RV\",\"Newmar Corp\"})",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Winnebago"
+    },
+    {
+      "name": "Winnebago MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Winnebago Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Winnebago"
+    },
+    {
+      "name": "Forest River Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration], 'Statistical Survey Registration'[Manufacturer] = \"Forest River Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Forest River RV"
+    },
+    {
+      "name": "Forest River MS% (Motorized)",
+      "expression": "DIVIDE([Forest River Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Forest River"
+    },
+    {
+      "name": "Other Motorized Registration",
+      "expression": "```\n\nVAR ExcludedManufacturers =\n{\n\"THOR Industries Inc\",\n\"Forest River Inc\",\n\"Winnebago Motorized\",\n\"Grand Design RV\",\n\"Newmar Corp\"\n}\nRETURN\nCALCULATE([Motorized Registration], NOT 'Statistical Survey Registration'[Manufacturer] IN ExcludedManufacturers)\n```",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Other"
+    },
+    {
+      "name": "Other MS% (Motorized)",
+      "expression": "DIVIDE([Other Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Other"
+    },
+    {
+      "name": "Winnebago Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration], 'Statistical Survey Registration'[Manufacturer] IN {\"Winnebago Motorized\",\"Grand Design RV\",\"Newmar Corp\"})",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Competitor\\Winnebago"
+    },
+    {
+      "name": "Winnebago MS% (Motorized)",
+      "expression": "DIVIDE([Winnebago Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Competitor\\Winnebago"
+    },
+    {
+      "name": "Heartland Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Heartland RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Heartland"
+    },
+    {
+      "name": "Heartland MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Heartland Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Heartland"
+    },
+    {
+      "name": "Jayco Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Jayco Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Keystone Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Keystone RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Keystone"
+    },
+    {
+      "name": "Tiffin Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Tiffin Motor Homes\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "Jayco MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Jayco Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Keystone MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Keystone Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Keystone"
+    },
+    {
+      "name": "Tiffin MS% (Fifth Wheel)",
+      "expression": "DIVIDE([Tiffin Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "Airstream Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Airstream\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Heartland Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Heartland RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Heartland"
+    },
+    {
+      "name": "Jayco Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Jayco Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Keystone Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Keystone RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Keystone"
+    },
+    {
+      "name": "KZ RV Travel Trailer Registration",
+      "expression": "CALCULATE([Travel Trailer Registration],'Statistical Survey Registration'[THOR Operating Company] = \"KZ RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "Airstream MS% (Travel Trailer)",
+      "expression": "DIVIDE([Airstream Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Heartland MS% (Travel Trailer)",
+      "expression": "DIVIDE([Heartland Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Heartland"
+    },
+    {
+      "name": "Jayco MS% (Travel Trailer)",
+      "expression": "DIVIDE([Jayco Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Keystone MS% (Travel Trailer)",
+      "expression": "DIVIDE([Keystone Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Keystone"
+    },
+    {
+      "name": "KZ RV MS% (Travel Trailer)",
+      "expression": "DIVIDE([KZ RV Travel Trailer Registration],[Travel Trailer Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "Airstream Towable Registration",
+      "expression": "CALCULATE([Towable Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Airstream\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Heartland Towable Registration",
+      "expression": "CALCULATE([Towable Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Heartland RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Heartland"
+    },
+    {
+      "name": "Jayco Towable Registration",
+      "expression": "CALCULATE([Towable Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Jayco Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Keystone Towable Registration",
+      "expression": "CALCULATE([Towable Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Keystone RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Keystone"
+    },
+    {
+      "name": "KZ RV Towable Registration",
+      "expression": "CALCULATE([Towable Registration],'Statistical Survey Registration'[THOR Operating Company] = \"KZ RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "Tiffin Towable Registration",
+      "expression": "CALCULATE([Towable Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Tiffin Motor Homes\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "Airstream MS% (Towable)",
+      "expression": "DIVIDE([Airstream Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Heartland MS% (Towable)",
+      "expression": "DIVIDE([Heartland Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Heartland"
+    },
+    {
+      "name": "Jayco MS% (Towable)",
+      "expression": "DIVIDE([Jayco Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Keystone MS% (Towable)",
+      "expression": "DIVIDE([Keystone Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Keystone"
+    },
+    {
+      "name": "KZ RV MS% (Towable)",
+      "expression": "DIVIDE([KZ RV Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "Tiffin MS% (Towable)",
+      "expression": "DIVIDE([Tiffin Towable Registration],[Towable Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "Airstream Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Airstream\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Jayco Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Jayco Inc\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Tiffin Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration],'Statistical Survey Registration'[THOR Operating Company] = \"Tiffin Motor Homes\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "Airstream MS% (Motorized)",
+      "expression": "DIVIDE([Airstream Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Jayco MS% (Motorized)",
+      "expression": "DIVIDE([Jayco Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Tiffin MS% (Motorized)",
+      "expression": "DIVIDE([Tiffin Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "TMC Motorized Registration",
+      "expression": "CALCULATE([Motorized Registration],'Statistical Survey Registration'[THOR Operating Company] = \"THOR Motor Coach\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\TMC"
+    },
+    {
+      "name": "TMC MS% (Motorized)",
+      "expression": "DIVIDE([TMC Motorized Registration],[Motorized Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\TMC"
+    },
+    {
+      "name": "KZ RV Fifth Wheel Registration",
+      "expression": "CALCULATE([Fifth Wheel Registration],'Statistical Survey Registration'[THOR Operating Company] = \"KZ RV\")",
+      "table": "Statistical Survey Registration",
+      "formatString": "#,0",
+      "displayFolder": "02 - Custom Reporting\\Registration\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "KZ RV MS% (Fifth Wheel)",
+      "expression": "DIVIDE([KZ RV Fifth Wheel Registration],[Fifth Wheel Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "Keystone T12M MS% (Towable)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date])       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Towable Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Keystone Towable Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Keystone"
+    },
+    {
+      "name": "Jayco T12M MS% (Towable)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Towable Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Jayco Towable Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Heartland T12M MS% (Towable)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Towable Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Heartland Towable Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Heartland"
+    },
+    {
+      "name": "KZ RV T12M MS% (Towable)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Towable Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[KZ RV Towable Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\KZ RV"
+    },
+    {
+      "name": "Airstream T12M MS% (Towable)",
+      "expression": "VAR EndDate =\nMAX ('Date'[Calendar Date])\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Towable Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Airstream Towable Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Airstream"
+    },
+    {
+      "name": "TMC T12M MS% (Motorized)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Motorized Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[TMC Motorized Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\TMC"
+    },
+    {
+      "name": "Jayco T12M MS% (Motorized)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Motorized Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Jayco Motorized Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Jayco"
+    },
+    {
+      "name": "Airstream T12M MS% (Motorized)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Motorized Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Airstream Motorized Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Airstream"
+    },
+    {
+      "name": "Tiffin T12M MS% (Motorized)",
+      "expression": "VAR EndDate =\nMAX ( 'Date'[Calendar Date] )       -- <-- uses the row\u2019s month in the visual\n\nVAR T12MWindow =\nDATESINPERIOD (\n'Date'[Calendar Date],\nEndDate,\n-12,\nMONTH\n)\n\nVAR TotalT12M =\nCALCULATE (\n[Motorized Registration],\nT12MWindow\n)\n\nVAR THORT12M =\nCALCULATE (\n[Tiffin Motorized Registration],\nT12MWindow\n)\n\nRETURN\nDIVIDE ( THORT12M, TotalT12M )",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\Operating Company\\Tiffin"
+    },
+    {
+      "name": "THOR MS% (Class A)",
+      "expression": "DIVIDE([THOR Class A Registration],[Class A Registration])",
+      "table": "Statistical Survey Registration",
+      "formatString": "0.0%;-0.0%;0.0%",
+      "displayFolder": "02 - Custom Reporting\\Market Share\\THOR"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Statistical Survey Registration.registration_date_skey",
+      "to": "Date.dim_date_skey",
+      "type": "many-to-one"
+    }
+  ],
+  "filterColumns": [
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Placement BTA",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Placement Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Placement City",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Placement Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Placement County",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Placement Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Placement State",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Placement Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Placement Zip",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Placement Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Price Group",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Dealer Group",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Dealership Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Dealership BTA",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Dealership Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Dealership City",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Dealership Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Dealership County",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Dealership Geography"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Dealership State",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Chassis Model",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Gross Vehicle Weight",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "RV Subtype",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Manufacturer - Division - Model"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "RV Model",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Manufacturer - Division - Model"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Drive Type",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Number of Axles",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Is Rental",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Is THOR",
+      "dataType": "int64",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Motorized or Towable",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "THOR Operating Company",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Model Year",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Manufacturer - Division - Model"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "RV Type",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\RV Attributes"
+    },
+    {
+      "table": "Statistical Survey Registration",
+      "column": "Dealership Country",
+      "dataType": "string",
+      "displayFolder": "01 - Attributes\\Dealership Geography"
+    }
+  ],
+  "discoveredAt": "2026-02-11T13:49:34.796352+00:00"
+}

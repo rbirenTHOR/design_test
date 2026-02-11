@@ -83,3 +83,29 @@ export interface NavItem {
   icon?: string
   active?: boolean
 }
+
+/* ------------------------------------------------------------------ */
+/*  Statistical Survey Registration Types                              */
+/* ------------------------------------------------------------------ */
+
+/** Operating company registration row for DataTable */
+export interface OpCoRegistrationRow {
+  id: string
+  operatingCompany: string
+  travelTrailer: number
+  fifthWheel: number
+  towable: number
+  motorized: number
+  total: number
+}
+
+/** Operating company market share row for DataTable */
+export interface OpCoMarketShareRow {
+  id: string
+  operatingCompany: string
+  travelTrailerMs: number
+  fifthWheelMs: number
+  towableMs: number
+  motorizedMs: number
+  t12mTowableMs: number
+}

@@ -4,6 +4,56 @@
 
 ---
 
+## Startup Protocol (READ THIS FIRST)
+
+**Goal: Minimize token usage on startup. Do NOT read every file in the codebase.**
+
+### On every new conversation:
+
+1. **Read ONLY this file (`CLAUDE.md`)**. It contains the component map, color palette, typography, spacing, and all design rules you need. Do NOT read individual component source files unless you need to debug or extend a specific component.
+
+2. **Check the data source config**: Read `src/config/data-source.json`.
+   - If `"configured": false` → **STOP**. You MUST run the Data Source Gate (below) before building any data-driven pages.
+   - If `"configured": true` → Read `src/config/schema-cache.json` for the semantic model schema (tables, columns, measures). Use this to generate types and mock data.
+
+3. **For page building**: Reference the component map table (below) and `docs/COMPONENT_API.md` for prop signatures. Only read a component's `.tsx` source if you need implementation details not covered in the docs.
+
+4. **For styling questions**: Everything is in this file (colors, fonts, spacing, shadows, border-radius). Do NOT read `tailwind.config.ts` or `globals.css` unless debugging a build issue.
+
+### What NOT to do on startup:
+- Do NOT read all files in `src/components/` — the Component Map below has what you need
+- Do NOT read `src/lib/mock-data.ts` until you need to add data
+- Do NOT read `docs/*.md` unless you need a specific deep-dive
+- Do NOT invent data types — they MUST come from the schema cache or the user
+
+---
+
+## Data Source Gate (MANDATORY before building pages)
+
+Before creating any data-driven page, you MUST check `src/config/data-source.json`.
+
+```
+If configured === true  → Read src/config/schema-cache.json, then build.
+If configured === false → Run automated discovery (see below), then build.
+```
+
+### Automated discovery (when `configured === false`):
+1. Look up the model name in the **Known Models** table (bottom of this file)
+2. Get a bearer token via `az account get-access-token --resource https://analysis.windows.net/powerbi/api --query accessToken -o tsv`
+3. Call the **Fabric getDefinition API** (NOT DAX INFO functions — those don't work via REST). Full steps in `docs/FABRIC_INTEGRATION.md` Section 2b. Summary:
+   - `POST https://api.fabric.microsoft.com/v1/workspaces/{id}/semanticModels/{id}/getDefinition` (with `Content-Length: 0` header)
+   - Poll the `Location` response header URL until `status: Succeeded`
+   - `GET {location}/result` → save to `tmdl_raw.json`
+   - Parse TMDL with Python (`/c/Users/rbiren/AppData/Local/anaconda3/python.exe`) — decode base64, extract tables/columns/measures/relationships
+4. Write `src/config/schema-cache.json` and update `src/config/data-source.json` to `configured: true`
+5. Generate types in `src/lib/types.ts`, mock data in `src/lib/mock-data.ts`
+6. Delete `tmdl_raw.json` when done
+
+**NEVER** invent column names, ask the user to paste schema, or skip discovery.
+**NEVER** use `INFO.TABLES()`, `INFO.COLUMNS()`, `INFO.MEASURES()`, or `COLUMNSTATISTICS()` via the executeQueries REST API — they are not supported.
+
+---
+
 ## Quick Reference
 
 - **Colors**: ONLY the 10 THOR brand colors (see below). No Tailwind defaults, no named CSS colors, no `#000`/`#FFF`.
@@ -177,13 +227,11 @@ For complete specifications, see `docs/`:
 
 ---
 
-## Fabric Semantic Model Integration
+## Fabric Integration
 
-Mock data lives in `src/lib/mock-data.ts`. When connecting to a real Fabric semantic model:
+For all Fabric details (auth, schema discovery, API routes, DAX patterns, data hooks, error handling, env vars), see **`docs/FABRIC_INTEGRATION.md`**. Do NOT read it unless building a data-driven page.
 
-1. Read `docs/FABRIC_INTEGRATION.md` for the complete guide (API endpoints, token scopes, TMDL format, DAX patterns, Node.js service module)
-2. Create API routes in `app/api/` that query the semantic model via DAX
-3. Replace mock data imports with `fetch()` calls to your API routes
-4. Data types in `src/lib/types.ts` define the exact shape — Fabric responses MUST conform
-
-**Known model**: THOR BI workspace `9c727ce4-5f7e-4008-b31e-f3e3bd8e0adc`, Statistical Survey dataset `27df7e8c-17d4-45a5-9267-4f4e971dfd7f`
+### Known Models (used by Data Source Gate):
+| Name | Workspace ID | Dataset ID |
+|------|-------------|-----------|
+| Statistical Survey | `9c727ce4-5f7e-4008-b31e-f3e3bd8e0adc` | `27df7e8c-17d4-45a5-9267-4f4e971dfd7f` |

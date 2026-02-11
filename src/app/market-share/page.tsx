@@ -4,26 +4,24 @@ import React from "react"
 import { type ColumnDef } from "@tanstack/react-table"
 import { AppShell } from "@/components/shell"
 import { KpiCard, KpiCardGroup } from "@/components/kpi"
-import { BarChart } from "@/components/charts/BarChart"
+import { HorizontalBarChart } from "@/components/charts/HorizontalBarChart"
 import { LineChart } from "@/components/charts/LineChart"
-import { DonutChart } from "@/components/charts/DonutChart"
 import { DataTable } from "@/components/tables/DataTable"
-import { formatInteger } from "@/lib/utils/formatting"
+import { formatPercent } from "@/lib/utils/formatting"
 import { COLORS, FONTS } from "@/lib/constants"
 import { surveyNavSections, SurveyFilters } from "@/lib/survey-config"
-import type { OpCoRegistrationRow } from "@/lib/types"
+import type { OpCoMarketShareRow } from "@/lib/types"
 import {
-  registrationKpis,
-  registrationByTypeData,
-  motorizedVsTowableData,
-  monthlyRegistrationTrend,
-  opCoRegistrationData,
+  marketShareKpis,
+  manufacturerMarketShareData,
+  t12mMarketShareTrend,
+  opCoMarketShareData,
 } from "@/lib/mock-data"
 
 /* ------------------------------------------------------------------ */
 /*  DataTable column definitions                                       */
 /* ------------------------------------------------------------------ */
-const opCoColumns: ColumnDef<OpCoRegistrationRow, unknown>[] = [
+const msColumns: ColumnDef<OpCoMarketShareRow, unknown>[] = [
   {
     accessorKey: "operatingCompany",
     header: "Operating Company",
@@ -34,35 +32,50 @@ const opCoColumns: ColumnDef<OpCoRegistrationRow, unknown>[] = [
     ),
   },
   {
-    accessorKey: "travelTrailer",
-    header: "Travel Trailer",
-    cell: ({ getValue }) => formatInteger(getValue() as number),
+    accessorKey: "travelTrailerMs",
+    header: "Travel Trailer MS%",
+    cell: ({ getValue }) => {
+      const v = getValue() as number
+      return v > 0 ? formatPercent(v, 1) : "—"
+    },
   },
   {
-    accessorKey: "fifthWheel",
-    header: "Fifth Wheel",
-    cell: ({ getValue }) => formatInteger(getValue() as number),
+    accessorKey: "fifthWheelMs",
+    header: "Fifth Wheel MS%",
+    cell: ({ getValue }) => {
+      const v = getValue() as number
+      return v > 0 ? formatPercent(v, 1) : "—"
+    },
   },
   {
-    accessorKey: "towable",
-    header: "Towable",
-    cell: ({ getValue }) => (
-      <span style={{ fontWeight: 600 }}>{formatInteger(getValue() as number)}</span>
-    ),
+    accessorKey: "towableMs",
+    header: "Towable MS%",
+    cell: ({ getValue }) => {
+      const v = getValue() as number
+      return v > 0 ? (
+        <span style={{ fontWeight: 600 }}>{formatPercent(v, 1)}</span>
+      ) : "—"
+    },
   },
   {
-    accessorKey: "motorized",
-    header: "Motorized",
-    cell: ({ getValue }) => formatInteger(getValue() as number),
+    accessorKey: "motorizedMs",
+    header: "Motorized MS%",
+    cell: ({ getValue }) => {
+      const v = getValue() as number
+      return v > 0 ? formatPercent(v, 1) : "—"
+    },
   },
   {
-    accessorKey: "total",
-    header: "Total",
-    cell: ({ getValue }) => (
-      <span style={{ fontWeight: 700, color: COLORS.darkGreen }}>
-        {formatInteger(getValue() as number)}
-      </span>
-    ),
+    accessorKey: "t12mTowableMs",
+    header: "T12M Towable MS%",
+    cell: ({ getValue }) => {
+      const v = getValue() as number
+      return v > 0 ? (
+        <span style={{ fontWeight: 700, color: COLORS.darkGreen }}>
+          {formatPercent(v, 1)}
+        </span>
+      ) : "—"
+    },
   },
 ]
 
@@ -98,11 +111,11 @@ function Section({
 /* ------------------------------------------------------------------ */
 /*  Page Component                                                     */
 /* ------------------------------------------------------------------ */
-export default function RegistrationPage() {
+export default function MarketSharePage() {
   return (
     <AppShell
       navSections={surveyNavSections}
-      activeNavId="registration"
+      activeNavId="market-share"
       headerTitle="Statistical Survey"
       filterContent={<SurveyFilters />}
       filterCount={0}
@@ -118,7 +131,7 @@ export default function RegistrationPage() {
               color: COLORS.darkestGrey,
             }}
           >
-            Registration Overview
+            Market Share Analysis
           </h1>
           <p
             className="mt-1"
@@ -128,7 +141,7 @@ export default function RegistrationPage() {
               color: COLORS.grey,
             }}
           >
-            RV registration data across all manufacturers and THOR operating companies
+            THOR market share across RV segments vs industry competitors
           </p>
         </div>
         <div
@@ -145,7 +158,7 @@ export default function RegistrationPage() {
 
       {/* KPI Row */}
       <KpiCardGroup className="mb-6">
-        {registrationKpis.map((kpi) => (
+        {marketShareKpis.map((kpi) => (
           <KpiCard
             key={kpi.id}
             metricId={kpi.id}
@@ -160,49 +173,39 @@ export default function RegistrationPage() {
         ))}
       </KpiCardGroup>
 
-      {/* Charts row 1: Bar + Donut */}
-      <div className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-          <Section title="Registrations by RV Type">
-            <BarChart
-              data={registrationByTypeData}
-              dataKeys={["registrations"]}
-              xAxisKey="name"
-              height={320}
-            />
-          </Section>
-        </div>
-        <Section title="Motorized vs Towable">
-          <DonutChart
-            data={motorizedVsTowableData}
-            height={320}
-            centerValue="385.2K"
-            centerLabel="Total Registrations"
+      {/* Charts row 1: Horizontal Bar + T12M Trend */}
+      <div className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <Section title="Industry Market Share by Manufacturer">
+          <HorizontalBarChart
+            data={manufacturerMarketShareData}
+            height={340}
+            valueFormatter={(v) => formatPercent(v, 1)}
           />
         </Section>
-      </div>
 
-      {/* Charts row 2: Line */}
-      <div className="mb-6">
-        <Section title="Monthly Registration Trend">
+        <Section title="T12M Market Share Trend by Operating Company">
           <LineChart
-            data={monthlyRegistrationTrend}
+            data={t12mMarketShareTrend}
             lines={[
-              { dataKey: "total", name: "Industry Total" },
-              { dataKey: "thor", name: "THOR", color: COLORS.blue },
+              { dataKey: "jayco", name: "Jayco" },
+              { dataKey: "keystone", name: "Keystone", color: COLORS.blue },
+              { dataKey: "heartland", name: "Heartland", color: COLORS.darkOrange },
+              { dataKey: "kzRv", name: "KZ RV", color: COLORS.green },
+              { dataKey: "tmc", name: "TMC", color: COLORS.lightOrange },
+              { dataKey: "airstream", name: "Airstream", color: COLORS.grey },
+              { dataKey: "tiffin", name: "Tiffin", color: COLORS.lightGrey },
             ]}
             xAxisKey="name"
-            height={320}
-            showArea
+            height={340}
           />
         </Section>
       </div>
 
       {/* Table */}
-      <Section title="THOR Operating Company Registrations">
+      <Section title="THOR Operating Company Market Share Detail">
         <DataTable
-          columns={opCoColumns}
-          data={opCoRegistrationData}
+          columns={msColumns}
+          data={opCoMarketShareData}
           searchable
           searchPlaceholder="Search operating companies..."
           stickyHeader
